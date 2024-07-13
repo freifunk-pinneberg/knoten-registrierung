@@ -196,8 +196,11 @@ function displayForm()
 
             label {
                 display: inline-block;
-                padding-top: 15px;
                 padding-bottom: 5px;
+            }
+
+            .form-group {
+                margin-top: 15px;
             }
 
             input,
@@ -318,14 +321,14 @@ function displayForm()
         <div class="form-group">
             <label for="name">Knoten Name:</label>
             <div class="input">
-                <input type="text" id="name" name="name" pattern="[a-zA-Z0-9\-_]+" required>
+                <input type="text" id="name" name="name" pattern="[a-zA-Z0-9\-_]+" value="<?php echo htmlspecialchars($_GET['name']); ?>" required>
             </div>
         </div>
 
         <div class="form-group">
             <label for="vpn_key">VPN Key:</label>
             <div class="input">
-                <input type="text" id="vpn_key" name="vpn_key" pattern="^[a-z0-9]{64}$" required>
+                <input type="text" id="vpn_key" name="vpn_key" pattern="^[a-z0-9]{64}$" value="<?php echo htmlspecialchars($_GET['vpn_key']); ?>" required>
             </div>
         </div>
 
@@ -334,6 +337,8 @@ function displayForm()
             <div class="input">
                 <input type="email" id="email" name="email" required>
             </div>
+            <p>Wir senden dir eine E-Mail zur Bestätigung zu. Deine E-Mail-Adresse wird nicht veröffentlicht. Wir nutzen deine E-Mail-Adresse dazu um in besonders <strong>wichtigen</strong> Fällen die diesen spezifischen Knoten betreffen zu kontaktieren.</p>
+            <p>Mit der Anmeldung stimmst du dem <a href="https://pinneberg.freifunk.net/rechtliches/pico-peering-agreement" target="_blank">Pico Peering Agreement</a> zu</p>
         </div>
 
         <div class="form-group">
