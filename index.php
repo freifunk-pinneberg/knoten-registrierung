@@ -36,11 +36,11 @@ class Node
             return "Alle Felder sind erforderlich.";
         }
 
-        if (!preg_match($email, '/^[a-zA-Z0-9.!#$%&\'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/m')) {
+        if (!preg_match('/^[^@\s\']+@[^@\s\']+$/', $email)) {
             return "Ungültige E-Mail-Adresse.";
         }
 
-        if (!preg_match('/^[a-z0-9]{64}$/', $vpn_key)) {
+        if (!preg_match('/^[a-f0-9]{64}$/', $vpn_key)) {
             return "Der VPN Key darf nur aus Zahlen und Buchstaben bestehen.";
         }
 
