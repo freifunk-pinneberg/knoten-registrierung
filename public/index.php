@@ -7,15 +7,15 @@ const EMAIL_REPLY_TO = 'noc@pinneberg.freifunk.net';
 
 class Database
 {
-    private $db_file = 'database.sqlite';
-    private $db;
+    private string $db_file = '../private/database.sqlite';
+    private ?SQLite3 $db;
 
     public function __construct()
     {
         $this->db = new SQLite3($this->db_file);
     }
 
-    public function getDb()
+    public function getDb(): SQLite3
     {
         return $this->db;
     }
@@ -23,14 +23,14 @@ class Database
 
 class Node
 {
-    private $db;
+    private ?SQLite3 $db;
 
-    public function __construct($db)
+    public function __construct(SQLite3 $db)
     {
         $this->db = $db;
     }
 
-    public function register($name, $vpn_key, $email)
+    public function register(string $name, string $vpn_key, string $email): string
     {
         if (empty($name) || empty($vpn_key) || empty($email)) {
             return "Alle Felder sind erforderlich.";
@@ -50,7 +50,7 @@ class Node
 
         $secret = bin2hex(random_bytes(16));
 
-        $stmt = $this->db->prepare('INSERT INTO nodes (name, vpn_key, email, secret) VALUES (?, ?, ?, ?)');
+        $stmt = $this->db->prepare('INSERT INTO nodes (name, vpn_key, email, registered, secret) VALUES (?, ?, ?, "now", ?)');
         $stmt->bindValue(1, $name, SQLITE3_TEXT);
         $stmt->bindValue(2, $vpn_key, SQLITE3_TEXT);
         $stmt->bindValue(3, $email, SQLITE3_TEXT);
@@ -69,7 +69,11 @@ class Node
         $confirmation_link = SITE_URL . "/index.php?action=confirm&email=" . urlencode($email) . "&secret=" . urlencode($secret);
         $subject = 'Bitte bestätigen Sie Ihre E-Mail-Adresse';
         $message = "Bitte bestätigen Sie Ihre E-Mail-Adresse durch Klicken auf den folgenden Link: $confirmation_link";
-        $headers = 'From: ' . EMAIL_FROM . "\r\n" .
+        $headers =
+            'Mime-Version: 1.0' . "\r\n" .
+            'Content-Type: text/plain; charset=utf-8' . "\r\n" .
+            'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
+            'From: ' . EMAIL_FROM . "\r\n" .
             'Reply-To: ' . EMAIL_REPLY_TO . "\r\n" .
             'X-Mailer: PHP/' . phpversion();
 
@@ -93,7 +97,7 @@ class Node
 $db = (new Database())->getDb();
 $node = new Node($db);
 
-$action = isset($_GET['action']) ? $_GET['action'] : '';
+$action = $_GET['action'] ?? '';
 
 if ($action == 'register' && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];
@@ -114,7 +118,7 @@ function displayForm()
 {
     ?>
     <!DOCTYPE html>
-    <html>
+    <html lang="de">
     <head>
         <title>Freifunk Pinneberg - Knoten Registrierung</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">

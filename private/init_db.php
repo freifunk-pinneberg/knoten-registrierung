@@ -1,9 +1,9 @@
 <?php
 
-class Database
+class DatabaseInitialization
 {
-    private $db_file = 'database.sqlite';
-    private $db;
+    private string $db_file = 'database.sqlite';
+    private ?SQLite3 $db;
 
     public function __construct()
     {
@@ -19,7 +19,9 @@ class Database
                 name TEXT NOT NULL,
                 vpn_key TEXT NOT NULL UNIQUE,
                 email TEXT NOT NULL,
+                registered DATETIME DEFAULT NULL,
                 confirmed DATETIME DEFAULT NULL,
+                banned DATETIME DEFAULT NULL,
                 secret TEXT NOT NULL
             )");
             echo "Database initialized.";
@@ -29,4 +31,4 @@ class Database
     }
 }
 
-new Database();
+new DatabaseInitialization();
