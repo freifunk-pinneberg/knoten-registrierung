@@ -153,13 +153,25 @@ function displayForm()
                 max-width: 100%;
             }
 
+            .logo {
+                width: 100%;
+                max-width: 450px;
+            }
+
+            .intro {
+                display: block;
+                max-width: 450px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
             form {
                 background-color: #ffffff;
                 border: 1px solid #ebebeb;
                 padding: 20px;
-                margin: auto;
                 border-radius: 5px;
                 max-width: 600px;
+                margin: 10px auto;
             }
 
             a:link {
@@ -322,6 +334,10 @@ function displayForm()
     </head>
     <body>
     <form action="index.php?action=register" method="POST">
+        <div class="intro">
+            <img src="Logo.svg" alt="Freifunk Pinneberg Logo" class="logo">
+            <h1>VPN-Key Registrieren</h1>
+        </div>
         <div class="form-group">
             <label for="name">Knoten Name:</label>
             <div class="input">
@@ -341,8 +357,12 @@ function displayForm()
             <div class="input">
                 <input type="email" id="email" name="email" required>
             </div>
-            <p>Wir senden dir eine E-Mail zur Bestätigung zu. Deine E-Mail-Adresse wird nicht veröffentlicht. Wir nutzen deine E-Mail-Adresse dazu um in besonders <strong>wichtigen</strong> Fällen die diesen spezifischen Knoten betreffen zu kontaktieren.</p>
-            <p>Mit der Anmeldung stimmst du dem <a href="https://pinneberg.freifunk.net/rechtliches/pico-peering-agreement" target="_blank">Pico Peering Agreement</a> zu</p>
+            <p>Wir senden dir eine E-Mail zur Bestätigung zu. Deine E-Mail-Adresse wird nicht veröffentlicht. Wir nutzen
+                deine E-Mail-Adresse dazu um in besonders <strong>wichtigen</strong> Fällen die diesen spezifischen
+                Knoten betreffen zu kontaktieren.</p>
+            <p>Mit der Anmeldung stimmst du dem <a
+                    href="https://pinneberg.freifunk.net/rechtliches/pico-peering-agreement" target="_blank">Pico
+                    Peering Agreement</a> zu</p>
         </div>
 
         <div class="form-group">
