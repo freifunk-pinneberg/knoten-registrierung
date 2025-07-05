@@ -22,7 +22,8 @@ class DatabaseInitialization
                 registered DATETIME DEFAULT NULL,
                 confirmed DATETIME DEFAULT NULL,
                 banned DATETIME DEFAULT NULL,
-                secret TEXT NOT NULL
+                secret TEXT NOT NULL,
+                node_id TEXT DEFAULT NULL UNIQUE
             )");
             echo "Database initialized.";
         } else {
