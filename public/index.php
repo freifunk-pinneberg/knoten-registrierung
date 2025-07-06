@@ -73,7 +73,7 @@ class Node
             $this->sendConfirmationEmail($email, $secret);
             return 'Bestätigungs-E-Mail wurde gesendet.';
         } else {
-            return "VPN Key muss eindeutig sein.";
+            return "Fehler beim registrieren. Sicher das alles Daten korrekt sind? Falls der Fehler bestehen bleibt sende deinen key an keys@pinneberg.freifunk.net";
         }
     }
 
@@ -352,6 +352,10 @@ function displayForm()
         <div class="intro">
             <img src="favicon.svg" alt="Freifunk Pinneberg Logo" class="logo">
             <h1>VPN-Key Registrieren</h1>
+        </div>
+        <div class="form-group">
+            <p>Hier kannst du deinen neuen Knoten für das VPN registrieren.</p>
+            <p>Bitte nutze das Formular nur für Router die erstmalig ins Pinneberger VPN kommen, bei änderungen an bestehenden knoten schicke bitte eine mail an keys@pinneberg.freifunk.net</p>
         </div>
         <div class="form-group">
             <label for="name">Knoten Name:</label>

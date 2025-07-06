@@ -18,12 +18,13 @@ class DatabaseInitialization
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 vpn_key TEXT NOT NULL UNIQUE,
-                email TEXT NOT NULL,
+                email TEXT DEFAULT NULL,
                 registered DATETIME DEFAULT NULL,
                 confirmed DATETIME DEFAULT NULL,
                 banned DATETIME DEFAULT NULL,
                 secret TEXT NOT NULL,
-                node_id TEXT DEFAULT NULL UNIQUE
+                node_id TEXT DEFAULT NULL UNIQUE,
+                import_date DATETIME DEFAULT NULL
             )");
             echo "Database initialized.";
         } else {
