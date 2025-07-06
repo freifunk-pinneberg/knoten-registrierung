@@ -1,7 +1,11 @@
 <?php
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // Konfiguration
-const SITE_URL = 'https://vpn-form.pinneberg.freifunk.net';
+const SITE_URL = 'https://knoten-registrierung.pinneberg.freifunk.net';
 const EMAIL_FROM = 'noc@pinneberg.freifunk.net';
 const EMAIL_REPLY_TO = 'noc@pinneberg.freifunk.net';
 
@@ -70,14 +74,17 @@ class Node
         $stmt->bindValue(5, $node_id, SQLITE3_TEXT);
 
         if ($stmt->execute()) {
-            $this->sendConfirmationEmail($email, $secret);
-            return 'Bestätigungs-E-Mail wurde gesendet.';
+            if($this->sendConfirmationEmail($email, $secret)) {
+                return 'Bestätigungs-E-Mail wurde gesendet.';
+            } else {
+                return 'Fehler beim senden der E-Mail. Deine Daten wurden gespeichert, aber auß unbekanntem Grund konnte die E-Mail nicht gesendet werden. Bitte melde diesen Fehler unter service@pinneberg.freifunk.net';
+            }
         } else {
             return "Fehler beim registrieren. Sicher das alles Daten korrekt sind? Falls der Fehler bestehen bleibt sende deinen key an keys@pinneberg.freifunk.net";
         }
     }
 
-    private function sendConfirmationEmail($email, $secret): void
+    private function sendConfirmationEmail(string $email, string $secret): bool
     {
         $confirmation_link = SITE_URL . "/index.php?action=confirm&email=" . urlencode($email) . "&secret=" . urlencode($secret);
         $subject = 'Bitte bestätigen Sie Ihre E-Mail-Adresse';
@@ -88,9 +95,9 @@ class Node
             'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
             'From: ' . EMAIL_FROM . "\r\n" .
             'Reply-To: ' . EMAIL_REPLY_TO . "\r\n" .
-            'X-Mailer: PHP/' . phpversion();
+            'X-Mailer: PHP';
 
-        mail($email, $subject, $message, $headers);
+        return mail($email, $subject, $message, $headers);
     }
 
     public function confirmEmail($email, $secret): string
@@ -360,21 +367,21 @@ function displayForm()
         <div class="form-group">
             <label for="name">Knoten Name:</label>
             <div class="input">
-                <input type="text" id="name" name="name" pattern="[a-zA-Z0-9\-_]+" value="<?php echo htmlspecialchars($_GET['name']); ?>" required>
+                <input type="text" id="name" name="name" pattern="[a-zA-Z0-9\-_]+" value="<?php echo htmlspecialchars($_GET['name'] ?? ''); ?>" required>
             </div>
         </div>
 
         <div class="form-group">
             <label for="node_id">Knoten ID:</label>
             <div class="input">
-                <input type="text" id="node_id" name="node_id" pattern="^[0-9a-f]{12}$" value="<?php echo htmlspecialchars($_GET['node_id']); ?>">
+                <input type="text" id="node_id" name="node_id" pattern="^[0-9a-f]{12}$" value="<?php echo htmlspecialchars($_GET['node_id'] ?? ''); ?>">
             </div>
         </div>
 
         <div class="form-group">
             <label for="vpn_key">VPN Key:</label>
             <div class="input">
-                <input type="text" id="vpn_key" name="vpn_key" pattern="^[a-z0-9]{64}$" value="<?php echo htmlspecialchars($_GET['vpn_key']); ?>" required>
+                <input type="text" id="vpn_key" name="vpn_key" pattern="^[a-z0-9]{64}$" value="<?php echo htmlspecialchars($_GET['vpn_key'] ?? ''); ?>" required>
             </div>
         </div>
 
