@@ -86,13 +86,13 @@ class Node
 
     private function sendConfirmationEmail(string $email, string $secret): bool
     {
-        $confirmation_link = SITE_URL . "/index.php?action=confirm&email=" . urlencode($email) . "&secret=" . urlencode($secret);
+        $confirmation_link = SITE_URL . "/index.php?action=confirm&email=" . rawurlencode($email) . "&secret=" . rawurlencode($secret);
         $subject = mb_encode_mimeheader('Freifunk Pinneberg: Knoten registrierung bestätigen', 'UTF-8');
-        $message = "Bitte bestätige Deine E-Mail-Adresse durch Klicken auf den folgenden Link: $confirmation_link" . "\u{200B}" . ". Falls sich der VPN Key ändert, oder der Router seinen Besitzer wechselt, schreibe bitte eine kurze mail an service@pinneberg.freifunk.net";
+        $message = "Bitte bestätige Deine E-Mail-Adresse durch Klicken auf den folgenden Link: <$confirmation_link>. Falls sich der VPN Key ändert, oder der Router seinen Besitzer wechselt, schreibe bitte eine kurze mail an service@pinneberg.freifunk.net";
         $headers =
             'Mime-Version: 1.0' . "\r\n" .
             'Content-Type: text/plain; charset=utf-8' . "\r\n" .
-            'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
+            'Content-Transfer-Encoding: 8bit' . "\r\n" .
             'From: ' . EMAIL_FROM . "\r\n" .
             'Reply-To: ' . EMAIL_REPLY_TO . "\r\n" .
             'X-Mailer: PHP';
