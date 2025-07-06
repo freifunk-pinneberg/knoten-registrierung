@@ -30,10 +30,10 @@ class Node
         $this->db = $db;
     }
 
-    public function register(string $name, string $vpn_key, string $email): string
+    public function register(string $name, string $vpn_key, string $email, string $node_id = ''): string
     {
         if (empty($name) || empty($vpn_key) || empty($email)) {
-            return "Alle Felder sind erforderlich.";
+            return "Bitte alle Pflichtfelder ausfüllen.";
         }
 
         if (!preg_match('/^[^@\s\']+@[^@\s\']+$/', $email)) {
@@ -48,13 +48,26 @@ class Node
             return "Der Knotenname darf nur alphanumerische Zeichen, Bindestriche und Unterstriche enthalten.";
         }
 
+        if (!empty($node_id) && !preg_match('/^[0-9a-f]{12}$/', $node_id)) {
+            return "Ungültige Knoten ID, die Knoten ID ist immer alphanumerisch mit exakt 12 zeichen.";
+        }
+
+        if (preg_match('/ffpi-([0-9a-f]{12})/', $name, $matches) && empty($node_id)) {
+            $node_id = $matches[1];
+        }
+
+        if (empty($node_id)) {
+            $node_id = null;
+        }
+
         $secret = bin2hex(random_bytes(16));
 
-        $stmt = $this->db->prepare('INSERT INTO nodes (name, vpn_key, email, registered, secret) VALUES (?, ?, ?, "now", ?)');
+        $stmt = $this->db->prepare('INSERT INTO nodes (name, vpn_key, email, registered, secret, node_id) VALUES (?, ?, ?, "now", ?, ?)');
         $stmt->bindValue(1, $name, SQLITE3_TEXT);
         $stmt->bindValue(2, $vpn_key, SQLITE3_TEXT);
         $stmt->bindValue(3, $email, SQLITE3_TEXT);
         $stmt->bindValue(4, $secret, SQLITE3_TEXT);
+        $stmt->bindValue(5, $node_id, SQLITE3_TEXT);
 
         if ($stmt->execute()) {
             $this->sendConfirmationEmail($email, $secret);
@@ -64,7 +77,7 @@ class Node
         }
     }
 
-    private function sendConfirmationEmail($email, $secret)
+    private function sendConfirmationEmail($email, $secret): void
     {
         $confirmation_link = SITE_URL . "/index.php?action=confirm&email=" . urlencode($email) . "&secret=" . urlencode($secret);
         $subject = 'Bitte bestätigen Sie Ihre E-Mail-Adresse';
@@ -80,7 +93,7 @@ class Node
         mail($email, $subject, $message, $headers);
     }
 
-    public function confirmEmail($email, $secret)
+    public function confirmEmail($email, $secret): string
     {
         $stmt = $this->db->prepare('UPDATE nodes SET confirmed = datetime("now") WHERE email = ? AND secret = ?');
         $stmt->bindValue(1, $email, SQLITE3_TEXT);
@@ -102,8 +115,9 @@ $action = $_GET['action'] ?? '';
 if ($action == 'register' && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];
     $vpn_key = $_POST['vpn_key'];
+    $node_id = $_POST['node_id'] ?? '';
     $email = $_POST['email'];
-    $message = $node->register($name, $vpn_key, $email);
+    $message = $node->register($name, $vpn_key, $email, $node_id);
     echo $message;
 } elseif ($action == 'confirm' && isset($_GET['email']) && isset($_GET['secret'])) {
     $email = $_GET['email'];
@@ -120,8 +134,9 @@ function displayForm()
     <!DOCTYPE html>
     <html lang="de">
     <head>
-        <title>Freifunk Pinneberg - Knoten Registrierung</title>
+        <title>Freifunk Pinneberg - VPN-Key Registrieren</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/svg+xml" href="https://pinneberg.freifunk.net/favicon.svg" sizes="any">
         <meta name="robots" content="noindex,nofollow">
         <style>
             * {
@@ -143,7 +158,7 @@ function displayForm()
                 background-color: #f7f7f7;
                 color: #666666;
                 margin: 0;
-                padding: 0;
+                padding: 10px;
                 max-width: 100%;
                 min-height: 100%;
                 font-size: 20px;
@@ -171,7 +186,7 @@ function displayForm()
                 padding: 20px;
                 border-radius: 5px;
                 max-width: 600px;
-                margin: 10px auto;
+                margin: 0px auto;
             }
 
             a:link {
@@ -235,7 +250,6 @@ function displayForm()
                 border: solid 2px #666666;
                 box-shadow: none;
                 width: 100%;
-                max-width: 450px;
             }
 
             select {
@@ -315,7 +329,8 @@ function displayForm()
                 vertical-align: middle;
                 line-height: 50px;
                 text-decoration: none;
-                margin-top: 15px:
+                margin-top: 15px;
+                width: 100%;
             }
 
             a:link.button.light,
@@ -335,13 +350,20 @@ function displayForm()
     <body>
     <form action="index.php?action=register" method="POST">
         <div class="intro">
-            <img src="Logo.svg" alt="Freifunk Pinneberg Logo" class="logo">
+            <img src="favicon.svg" alt="Freifunk Pinneberg Logo" class="logo">
             <h1>VPN-Key Registrieren</h1>
         </div>
         <div class="form-group">
             <label for="name">Knoten Name:</label>
             <div class="input">
                 <input type="text" id="name" name="name" pattern="[a-zA-Z0-9\-_]+" value="<?php echo htmlspecialchars($_GET['name']); ?>" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="node_id">Knoten ID:</label>
+            <div class="input">
+                <input type="text" id="node_id" name="node_id" pattern="^[0-9a-f]{12}$" value="<?php echo htmlspecialchars($_GET['node_id']); ?>">
             </div>
         </div>
 
@@ -358,11 +380,12 @@ function displayForm()
                 <input type="email" id="email" name="email" required>
             </div>
             <p>Wir senden dir eine E-Mail zur Bestätigung zu. Deine E-Mail-Adresse wird nicht veröffentlicht. Wir nutzen
-                deine E-Mail-Adresse dazu um in besonders <strong>wichtigen</strong> Fällen die diesen spezifischen
+                deine E-Mail-Adresse dazu dich in besonders <strong>wichtigen</strong> Fällen die diesen spezifischen
                 Knoten betreffen zu kontaktieren.</p>
-            <p>Mit der Anmeldung stimmst du dem <a
+            <p>Mit der Registrierung verpflichtest du dich, die VPN-Verbindung ausschließlich zur Bereitstellung eines
+                Freien Netzes im Sinne des <a
                     href="https://pinneberg.freifunk.net/rechtliches/pico-peering-agreement" target="_blank">Pico
-                    Peering Agreement</a> zu</p>
+                    Peering Agreement</a> zu verwenden.</p>
         </div>
 
         <div class="form-group">
