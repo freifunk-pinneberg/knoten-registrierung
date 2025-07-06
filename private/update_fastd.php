@@ -58,7 +58,7 @@ final class Node
             '# registered: ' . $this->registered ?? '',
             '# confirmed: ' . $this->confirmed ?? '',
             '# secret: ' . $this->secret ?? '',
-            '# Node-ID:' . $this->nodeId ?? '',
+            '# Node-ID: ' . $this->nodeId ?? '',
             '',
             'key "' . $this->vpnKey . '";',
             '',
