@@ -87,8 +87,8 @@ class Node
     private function sendConfirmationEmail(string $email, string $secret): bool
     {
         $confirmation_link = SITE_URL . "/index.php?action=confirm&email=" . urlencode($email) . "&secret=" . urlencode($secret);
-        $subject = 'Bitte bestätigen Sie Ihre E-Mail-Adresse';
-        $message = "Bitte bestätigen Sie Ihre E-Mail-Adresse durch Klicken auf den folgenden Link: $confirmation_link";
+        $subject = mb_encode_mimeheader('Freifunk Pinneberg: Knoten registrierung bestätigen', 'UTF-8');
+        $message = "Bitte bestätige Deine E-Mail-Adresse durch Klicken auf den folgenden Link: $confirmation_link" . "\u{200B}" . ". Falls sich der VPN Key ändert, oder der Router seinen Besitzer wechselt, schreibe bitte eine kurze mail an service@pinneberg.freifunk.net";
         $headers =
             'Mime-Version: 1.0' . "\r\n" .
             'Content-Type: text/plain; charset=utf-8' . "\r\n" .
