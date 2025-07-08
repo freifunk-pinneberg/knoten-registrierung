@@ -259,6 +259,10 @@ function displayForm()
                 width: 100%;
             }
 
+            input::placeholder {
+                opacity: 0.2;
+            }
+
             select {
                 height: 56px;
             }
@@ -361,34 +365,34 @@ function displayForm()
             <h1>VPN-Key Registrieren</h1>
         </div>
         <div class="form-group">
-            <p>Hier kannst du deinen neuen Knoten für das VPN registrieren.</p>
-            <p>Bitte nutze das Formular nur für Router die erstmalig ins Pinneberger VPN kommen, bei änderungen an bestehenden knoten schicke bitte eine mail an keys@pinneberg.freifunk.net</p>
+            <p>Hier kannst du deinen neuen Knoten für das Mesh-VPN registrieren.</p>
+            <p>Bitte nutze das Formular nur für Router die erstmalig ins Pinneberger Mesh-VPN kommen. Bei Änderungen an bestehenden Knoten schicke bitte eine E-Mail an keys@pinneberg.freifunk.net</p>
         </div>
         <div class="form-group">
             <label for="name">Knoten Name:</label>
             <div class="input">
-                <input type="text" id="name" name="name" pattern="[a-zA-Z0-9\-_]+" value="<?php echo htmlspecialchars($_GET['name'] ?? ''); ?>" required>
+                <input type="text" id="name" name="name" pattern="[a-zA-Z0-9\-_]+" placeholder="HAL-9000" value="<?php echo htmlspecialchars($_GET['name'] ?? ''); ?>" required>
             </div>
         </div>
 
         <div class="form-group">
             <label for="node_id">Knoten ID:</label>
             <div class="input">
-                <input type="text" id="node_id" name="node_id" pattern="^[0-9a-f]{12}$" value="<?php echo htmlspecialchars($_GET['node_id'] ?? ''); ?>">
+                <input type="text" id="node_id" name="node_id" placeholder="48414c200100" pattern="^[0-9a-f]{12}$" value="<?php echo htmlspecialchars($_GET['node_id'] ?? ''); ?>">
             </div>
         </div>
 
         <div class="form-group">
             <label for="vpn_key">VPN Key:</label>
             <div class="input">
-                <input type="text" id="vpn_key" name="vpn_key" pattern="^[a-z0-9]{64}$" value="<?php echo htmlspecialchars($_GET['vpn_key'] ?? ''); ?>" required>
+                <input type="text" id="vpn_key" name="vpn_key" placeholder="d865f8b36f95b0efe0fb74c1dfe2e8b87651e778c4f4f2a6385861a384bffde" pattern="^[a-z0-9]{64}$" value="<?php echo htmlspecialchars($_GET['vpn_key'] ?? ''); ?>" required>
             </div>
         </div>
 
         <div class="form-group">
             <label for="email">E-Mail:</label>
             <div class="input">
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" placeholder="dave.bowman@ncao.gov" name="email" required>
             </div>
             <p>Wir senden dir eine E-Mail zur Bestätigung zu. Deine E-Mail-Adresse wird nicht veröffentlicht. Wir nutzen
                 deine E-Mail-Adresse dazu dich in besonders <strong>wichtigen</strong> Fällen die diesen spezifischen
