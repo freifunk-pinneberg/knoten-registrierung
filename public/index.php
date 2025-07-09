@@ -48,9 +48,9 @@ class Node
             return "Der VPN Key darf nur aus Zahlen und Buchstaben bestehen.";
         }
 
-        if (!preg_match('/^[a-zA-Z0-9\-_]+$/', $name)) {
-            return "Der Knotenname darf nur alphanumerische Zeichen, Bindestriche und Unterstriche enthalten.";
-        }
+        //if (!preg_match('/^[a-zA-Z0-9\-_]+$/', $name)) {
+        //    return "Der Knotenname darf nur alphanumerische Zeichen, Bindestriche und Unterstriche enthalten.";
+        //}
 
         if (!empty($node_id) && !preg_match('/^[0-9a-f]{12}$/', $node_id)) {
             return "Ungültige Knoten ID, die Knoten ID ist immer alphanumerisch mit exakt 12 zeichen.";
@@ -371,7 +371,7 @@ function displayForm()
         <div class="form-group">
             <label for="name">Knoten Name:</label>
             <div class="input">
-                <input type="text" id="name" name="name" pattern="[a-zA-Z0-9\-_]+" placeholder="HAL-9000" value="<?php echo htmlspecialchars($_GET['name'] ?? ''); ?>" required>
+                <input type="text" id="name" name="name" placeholder="HAL-9000" value="<?php echo htmlspecialchars($_GET['name'] ?? ''); ?>" required>
             </div>
         </div>
 

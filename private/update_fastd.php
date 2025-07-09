@@ -127,6 +127,17 @@ final class PeerStore
 
     private function freeName(string $suggest): string
     {
+        // Sonderzeichen
+        $map = [
+            'Ä' => 'Ae', 'ä' => 'ae',
+            'Ö' => 'Oe', 'ö' => 'oe',
+            'Ü' => 'Ue', 'ü' => 'ue',
+            'ß' => 'ss',
+        ];
+        $suggest = strtr($suggest, $map);
+
+        // replace spaces with underscore
+        $suggest = str_replace(' ', '_', $suggest);
         $base = preg_replace('/[^A-Za-z0-9_-]+/', '', $suggest) ?: 'node';
         $path = $this->dir . '/' . $base;
         for ($i = 1; is_file($path); $i++)
