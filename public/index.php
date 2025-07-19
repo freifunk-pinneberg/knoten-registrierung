@@ -378,7 +378,6 @@ function displayForm()
             g.type='text/javascript'; g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
         })();
     </script>
-    <noscript><p><img src="https://pinneberg.freifunk.net/stats/hello.php?idsite=6&amp;rec=1" style="border:0;" alt="" /></p></noscript>
     <!-- End statistics Code -->
     <body>
     <form action="index.php?action=register" method="POST">
@@ -429,6 +428,7 @@ function displayForm()
             <button class="btn btn-primary" type="submit">Registrieren</button>
         </div>
     </form>
+    <noscript><img src="https://pinneberg.freifunk.net/stats/hello.php?idsite=6&amp;rec=1" style="border:0;" alt="" /></noscript>
     </body>
     </html>
     <?php
