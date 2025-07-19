@@ -358,6 +358,28 @@ function displayForm()
             }
         </style>
     </head>
+    <!-- statistics -->
+    <script type="text/javascript">
+        if ( window.matchMedia("(prefers-color-scheme:dark)").matches) {
+            colorScheme="dark";
+        } else {
+            colorScheme="light";
+        }
+        var _paq = window._paq = window._paq || [];
+        _paq.push(['setRequestMethod', 'POST']);
+        _paq.push(['setCustomVariable', 1, "prefers-color-scheme", colorScheme, "visit"]);
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function() {
+            var u="https://pinneberg.freifunk.net/stats/";
+            _paq.push(['setTrackerUrl', u+'hello.php']);
+            _paq.push(['setSiteId', '6']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.type='text/javascript'; g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+        })();
+    </script>
+    <noscript><p><img src="https://pinneberg.freifunk.net/stats/hello.php?idsite=6&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+    <!-- End statistics Code -->
     <body>
     <form action="index.php?action=register" method="POST">
         <div class="intro">
