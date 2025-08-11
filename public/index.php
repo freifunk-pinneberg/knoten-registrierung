@@ -65,13 +65,14 @@ class Node
         }
 
         $secret = bin2hex(random_bytes(16));
-
-        $stmt = $this->db->prepare('INSERT INTO nodes (name, vpn_key, email, registered, secret, node_id) VALUES (?, ?, ?, "now", ?, ?)');
+        $registered = time();
+        $stmt = $this->db->prepare('INSERT INTO nodes (name, vpn_key, email, registered, secret, node_id) VALUES (?, ?, ?, ?, ?, ?)');
         $stmt->bindValue(1, $name, SQLITE3_TEXT);
         $stmt->bindValue(2, $vpn_key, SQLITE3_TEXT);
         $stmt->bindValue(3, $email, SQLITE3_TEXT);
-        $stmt->bindValue(4, $secret, SQLITE3_TEXT);
-        $stmt->bindValue(5, $node_id, SQLITE3_TEXT);
+        $stmt->bindValue(4, $registered, SQLITE3_INTEGER);
+        $stmt->bindValue(5, $secret, SQLITE3_TEXT);
+        $stmt->bindValue(6, $node_id, SQLITE3_TEXT);
 
         if ($stmt->execute()) {
             if($this->sendConfirmationEmail($email, $secret)) {
